@@ -47,6 +47,21 @@ jobs:
         name: react-app
         path: ./deployment
         
+    - name: Add package.json for Node.js hosting
+      run: |
+        cat > ./deployment/package.json << 'EOF'
+        {
+          "name": "sharing-platform-app",
+          "version": "1.0.0",
+          "scripts": {
+            "start": "serve -s . -p $PORT"
+          },
+          "dependencies": {
+            "serve": "^14.2.0"
+          }
+        }
+        EOF
+        
     - name: Deploy to Azure App Service
       uses: azure/webapps-deploy@v2
       with:
