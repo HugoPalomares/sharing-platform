@@ -1,5 +1,10 @@
 # Agent Onboarding
 
+## set up with:
+- Homebrew (package manager)
+- GitHub CLI (gh)
+- GitHub authentication
+
 ## 📖 Required Reading (in order)
 1. **[README.md](./README.md)** - How we work together
 2. **[memory/constitution.md](./memory/constitution.md)** - Core development principles  
