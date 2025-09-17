@@ -30,6 +30,11 @@ jobs:
         cd prototype-gallery
         npm run build
         
+    - name: Prepare deployment package
+      run: |
+        mkdir -p deploy
+        cp -r prototype-gallery/dist/* deploy/
+        
     - name: Login to Azure
       uses: azure/login@v1
       with:
@@ -39,5 +44,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-        package: ./prototype-gallery/dist
+        package: ./deploy
         clean: true
