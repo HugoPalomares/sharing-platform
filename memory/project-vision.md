@@ -98,27 +98,58 @@ Using hybrid approach (local development with incremental Azure integration) and
 - Set up CI/CD from GitHub
 - Configure custom domain and SSL
 
-### Phase 4: Prototype Management
-**Feature 4**: Prototype upload and storage system
-- Azure Storage integration
-- Git repository ingestion
-- Prototype metadata management
+### Phase 4: Prototype Publishing
+**Feature 4**: GitHub repository integration and automated prototype hosting
+- GitHub OAuth integration for repo access (public/private repos)
+- Automated build pipeline from GitHub webhooks
+- Centralized hosting architecture (App Service + Database foundation)
+- Basic prototype metadata extraction and management
+- Core user flow: Connect repo → automatic deployment → live prototype URL
 
-### Phase 5: Access Control
-**Feature 5**: Sharing and access control
-- Email-based prototype sharing
-- Permission management and audit trails
-- External guest access workflows
+### Phase 5: Collaborative Features
+**Feature 5**: Comments and feedback system
+- Location-based commenting system (similar to Figma)
+- Page-specific comments with coordinate tracking
+- Real-time collaboration and feedback workflows
+- Comment management and notification system
 
-### Phase 6: Dynamic Configuration System
-**Feature 6**: Prototype knobs and scenario management
+### Phase 6: Access Control & Sharing
+**Feature 6**: Advanced permission and sharing system
+- Per-prototype access control (internal/external guests)
+- Configuration-specific access permissions
+- Email-based prototype sharing with temporary access
+- Enterprise integration (Microsoft EMU GitHub compatibility)
+- Audit trails and permission management UI
+
+### Phase 7: Dynamic Configuration System
+**Feature 7**: Prototype knobs and scenario management
 - Knob definition system (settings/parameters for prototypes)
-- Scenario creation and management UI
-- Runtime configuration passing to prototypes
-- Team scenario sharing and version control
-- Launch prototype with specific scenarios
+- Platform-based configuration UI (separate from prototype code)
+- Runtime configuration passing to prototypes via platform APIs
+- Scenario creation, sharing, and version control
+- Launch prototype with specific configurations
 
 Each feature follows `/feature` → `/plan` → `/implement` → `/diary` workflow to maintain context across development sessions.
+
+## Architectural Decisions
+
+### Centralized Backend Architecture
+- **Single Azure App Service + Azure SQL Database** for all prototypes and platform features
+- **Prototype hosting pattern**: `/prototype/{id}/` subdirectory routing with iframe isolation
+- **Shared API layer** for metadata, comments, permissions, and configuration management
+- **WebSocket support** for real-time collaborative features
+
+### GitHub Integration Strategy
+- **GitHub OAuth** for repository access (supports public/private repos)
+- **Webhook-based deployment** triggers automatic builds on repo updates
+- **Enterprise compatibility** designed for future Microsoft EMU GitHub integration
+- **Automated build detection** for React applications and static HTML/CSS/JS
+
+### Security & Access Model
+- **Prototype isolation** via iframe hosting for security
+- **Permission inheritance** from GitHub repo access as baseline
+- **Platform-specific overrides** for sharing with external guests
+- **EMU boundary respect** for enterprise deployment scenarios
 
 ### Future Enhancements
 
