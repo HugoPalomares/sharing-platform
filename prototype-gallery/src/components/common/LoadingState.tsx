@@ -23,15 +23,14 @@ const useStyles = makeStyles({
     gap: tokens.spacingVerticalS,
   },
   '@media (max-width: 768px)': {
-    grid: {
-      gridTemplateColumns: '1fr',
-      gap: tokens.spacingVerticalM,
-    } as any,
-  } as any,
+    gridTemplateColumns: '1fr',
+    gap: tokens.spacingVerticalM,
+  },
 });
 
 interface LoadingStateProps {
   count?: number;
+  message?: string;
 }
 
 const LoadingState: React.FC<LoadingStateProps> = ({ count = 6 }) => {

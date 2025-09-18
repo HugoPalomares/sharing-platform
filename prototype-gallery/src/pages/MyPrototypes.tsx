@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { makeStyles, tokens } from '@fluentui/react-components';
 import SectionTabs from '../components/common/SectionTabs';
 import SearchBar from '../components/common/SearchBar';
-import PrototypeGrid from '../components/gallery/PrototypeGrid';
+import EnhancedPrototypeGrid from '../components/gallery/EnhancedPrototypeGrid';
 import { getUserPrototypes } from '../data/mockPrototypes';
 import { useAuth } from '../contexts/AuthContext';
 import { useSearch } from '../hooks/useSearch';
+import { usePrototypes } from '../hooks/usePrototypes';
 
 const useStyles = makeStyles({
   container: {
@@ -29,10 +30,38 @@ const useStyles = makeStyles({
 
 const MyPrototypes: React.FC = () => {
   const { user } = useAuth();
+  const { prototypes: realPrototypes, loading, refetch } = usePrototypes();
   const styles = useStyles();
 
-  const userPrototypes = user ? getUserPrototypes(user.id) : [];
-  const { searchQuery, setSearchQuery, filteredPrototypes } = useSearch(userPrototypes);
+  // Get mock prototypes for current user
+  const userMockPrototypes = user ? getUserPrototypes(user.id) : [];
+  
+  // Combine and filter prototypes
+  const { searchQuery, setSearchQuery } = useSearch([]);
+  
+  const filteredRealPrototypes = useMemo(() => {
+    if (!searchQuery) return realPrototypes;
+    
+    const lowercaseQuery = searchQuery.toLowerCase();
+    return realPrototypes.filter(prototype => 
+      prototype.name.toLowerCase().includes(lowercaseQuery) ||
+      (prototype.description && prototype.description.toLowerCase().includes(lowercaseQuery)) ||
+      prototype.gitHubRepoName.toLowerCase().includes(lowercaseQuery) ||
+      prototype.gitHubOwner.toLowerCase().includes(lowercaseQuery)
+    );
+  }, [realPrototypes, searchQuery]);
+
+  const filteredMockPrototypes = useMemo(() => {
+    if (!searchQuery) return userMockPrototypes;
+    
+    const lowercaseQuery = searchQuery.toLowerCase();
+    return userMockPrototypes.filter(prototype => 
+      prototype.title.toLowerCase().includes(lowercaseQuery) ||
+      prototype.description.toLowerCase().includes(lowercaseQuery) ||
+      prototype.author.name.toLowerCase().includes(lowercaseQuery) ||
+      prototype.productArea.toLowerCase().includes(lowercaseQuery)
+    );
+  }, [userMockPrototypes, searchQuery]);
 
   return (
     <div className={styles.container}>
@@ -43,11 +72,15 @@ const MyPrototypes: React.FC = () => {
           onChange={setSearchQuery}
           placeholder="Search your prototypes..."
         />
-        <PrototypeGrid 
-          prototypes={filteredPrototypes} 
-          emptyMessage={userPrototypes.length === 0 ? "No prototypes created yet" : "No prototypes match your search"}
-          emptySubtitle={userPrototypes.length === 0 ? "Start creating prototypes to see them here" : "Try adjusting your search terms"}
-          emptyType={userPrototypes.length === 0 ? "prototypes" : "search"}
+        <EnhancedPrototypeGrid
+          title="My Prototypes"
+          subtitle="Prototypes you've created and published"
+          realPrototypes={filteredRealPrototypes}
+          mockPrototypes={filteredMockPrototypes}
+          loading={loading}
+          showAddButton={true}
+          showManagement={true}
+          onAddSuccess={refetch}
         />
       </div>
     </div>

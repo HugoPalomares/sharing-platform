@@ -32,10 +32,13 @@ const useStyles = makeStyles({
 });
 
 interface EmptyStateProps {
-  message: string;
+  message?: string;
+  title?: string;
   subtitle?: string;
+  description?: string;
   icon?: React.ReactElement;
   type?: 'search' | 'favorites' | 'prototypes' | 'default';
+  action?: React.ReactElement;
 }
 
 const getIconForType = (type: EmptyStateProps['type']) => {
@@ -53,18 +56,24 @@ const getIconForType = (type: EmptyStateProps['type']) => {
 
 const EmptyState: React.FC<EmptyStateProps> = ({ 
   message,
+  title,
   subtitle,
+  description,
   icon,
-  type = 'default'
+  type = 'default',
+  action
 }) => {
   const styles = useStyles();
   const displayIcon = icon || getIconForType(type);
+  const displayTitle = title || message;
+  const displayDescription = description || subtitle;
 
   return (
     <div className={styles.container}>
       <div className={styles.icon}>{displayIcon}</div>
-      <Text className={styles.message}>{message}</Text>
-      {subtitle && <Text className={styles.subtitle}>{subtitle}</Text>}
+      {displayTitle && <Text className={styles.message}>{displayTitle}</Text>}
+      {displayDescription && <Text className={styles.subtitle}>{displayDescription}</Text>}
+      {action && <div style={{ marginTop: tokens.spacingVerticalL }}>{action}</div>}
     </div>
   );
 };

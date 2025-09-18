@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GitHub Authentication Successful</title>
+</head>
+<body>
+  <p>GitHub authentication successful! This window should close automatically...</p>
+  <p id="status">Processing authentication...</p>
+  
+  <script>
+    // Extract access token from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get('access_token');
+    const authStatus = urlParams.get('github_auth');
+    const statusEl = document.getElementById('status');
+    
+    console.log('GitHub auth callback loaded');
+    console.log('Access token:', accessToken ? 'received' : 'missing');
+    console.log('Auth status:', authStatus);
+    console.log('window.opener:', window.opener);
+    
+    if (authStatus === 'success' && accessToken) {
+      statusEl.textContent = 'Sending authentication to parent window...';
+      console.log('Sending postMessage to parent window');
+      
+      // Send message to parent window
+      if (window.opener) {
+        // Try sending to multiple possible origins
+        const origins = ['http://localhost:5174', window.location.origin];
+        
+        origins.forEach(origin => {
+          console.log('Sending postMessage to origin:', origin);
+          try {
+            window.opener.postMessage({
+              type: 'GITHUB_AUTH_SUCCESS',
+              accessToken: accessToken
+            }, origin);
+          } catch (error) {
+            console.error('Error sending postMessage to', origin, ':', error);
+          }
+        });
+        
+        statusEl.textContent = 'Authentication sent! Window will close in 3 seconds...';
+        
+        // Close popup after a longer delay
+        setTimeout(() => {
+          console.log('Closing popup window');
+          statusEl.textContent = 'Closing window...';
+          window.close();
+        }, 3000);
+      } else {
+        console.log('No window.opener found');
+        statusEl.textContent = 'No parent window found. Redirecting...';
+        // Fallback: redirect to main app
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+      }
+    } else {
+      console.error('Authentication failed or missing token');
+      statusEl.textContent = 'Authentication failed!';
+      if (window.opener) {
+        window.opener.postMessage({
+          type: 'GITHUB_AUTH_ERROR',
+          error: 'Missing access token'
+        }, window.location.origin);
+        
+        setTimeout(() => window.close(), 3000);
+      }
+    }
+  </script>
+</body>
+</html>

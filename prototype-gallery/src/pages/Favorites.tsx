@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { makeStyles, tokens } from '@fluentui/react-components';
 import SectionTabs from '../components/common/SectionTabs';
 import SearchBar from '../components/common/SearchBar';
-import PrototypeGrid from '../components/gallery/PrototypeGrid';
+import EnhancedPrototypeGrid from '../components/gallery/EnhancedPrototypeGrid';
 import { mockPrototypes } from '../data/mockPrototypes';
 import { useFavorites } from '../contexts/FavoritesContext';
 import { useSearch } from '../hooks/useSearch';
+import { usePrototypes } from '../hooks/usePrototypes';
 
 const useStyles = makeStyles({
   container: {
@@ -29,13 +30,47 @@ const useStyles = makeStyles({
 
 const Favorites: React.FC = () => {
   const { favorites } = useFavorites();
+  const { prototypes: realPrototypes, loading } = usePrototypes();
   const styles = useStyles();
 
-  const favoritePrototypes = mockPrototypes.filter(prototype => 
+  // Filter mock prototypes by favorites
+  const favoriteMockPrototypes = mockPrototypes.filter(prototype => 
     favorites.includes(prototype.id)
   );
 
-  const { searchQuery, setSearchQuery, filteredPrototypes } = useSearch(favoritePrototypes);
+  // Filter real prototypes by favorites
+  const favoriteRealPrototypes = realPrototypes.filter(prototype => 
+    favorites.includes(prototype.id)
+  );
+
+  const { searchQuery, setSearchQuery } = useSearch([]);
+
+  // Apply search to both prototype types
+  const filteredMockPrototypes = useMemo(() => {
+    if (!searchQuery) return favoriteMockPrototypes;
+    
+    const lowercaseQuery = searchQuery.toLowerCase();
+    return favoriteMockPrototypes.filter(prototype => 
+      prototype.title.toLowerCase().includes(lowercaseQuery) ||
+      prototype.description.toLowerCase().includes(lowercaseQuery) ||
+      prototype.author.name.toLowerCase().includes(lowercaseQuery) ||
+      prototype.productArea.toLowerCase().includes(lowercaseQuery)
+    );
+  }, [favoriteMockPrototypes, searchQuery]);
+
+  const filteredRealPrototypes = useMemo(() => {
+    if (!searchQuery) return favoriteRealPrototypes;
+    
+    const lowercaseQuery = searchQuery.toLowerCase();
+    return favoriteRealPrototypes.filter(prototype => 
+      prototype.name.toLowerCase().includes(lowercaseQuery) ||
+      (prototype.description && prototype.description.toLowerCase().includes(lowercaseQuery)) ||
+      prototype.gitHubRepoName.toLowerCase().includes(lowercaseQuery) ||
+      prototype.gitHubOwner.toLowerCase().includes(lowercaseQuery)
+    );
+  }, [favoriteRealPrototypes, searchQuery]);
+
+  const totalFavorites = favoriteMockPrototypes.length + favoriteRealPrototypes.length;
 
   return (
     <div className={styles.container}>
@@ -46,11 +81,14 @@ const Favorites: React.FC = () => {
           onChange={setSearchQuery}
           placeholder="Search favorite prototypes..."
         />
-        <PrototypeGrid 
-          prototypes={filteredPrototypes} 
-          emptyMessage={favorites.length === 0 ? "No favorite prototypes yet" : "No favorites match your search"}
-          emptySubtitle={favorites.length === 0 ? "Heart prototypes to save them for quick access" : "Try adjusting your search terms"}
-          emptyType={favorites.length === 0 ? "favorites" : "search"}
+        <EnhancedPrototypeGrid
+          title="Favorite Prototypes"
+          subtitle="Prototypes you've bookmarked for quick access"
+          realPrototypes={filteredRealPrototypes}
+          mockPrototypes={filteredMockPrototypes}
+          loading={loading}
+          showAddButton={false}
+          showManagement={false}
         />
       </div>
     </div>

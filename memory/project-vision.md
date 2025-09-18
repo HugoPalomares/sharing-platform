@@ -1,39 +1,42 @@
-# Prototype Distribution Platform for Digital Creators 
+# Design Intent Infrastructure for Spec-Driven Development
 Author: Hugo Palomares
 
 ## Introduction
 
-A new breed of creators is emerging at Microsoft. They're designers, PMs, and even non-technical employees who are building functional prototypes using AI-powered tools like GitHub Copilot and VS Code. While tools like Lovable offer all-in-one authoring and publishing, our creators want the flexibility to author anywhere while maintaining Microsoft's security standards.
+The future of software development is emerging at Microsoft: AI-assisted workflows where design intent becomes the primary interface for implementation. A new breed of creators—designers, PMs, and non-technical employees—are building functional prototypes using AI-powered tools, but they lack systematic ways to capture, share, and scale their design decisions as executable specifications.
 
-The problem is simple: these creators can build impressive prototypes, but they have no secure, professional way to share them internally. External tools violate our security policies. Internal tools require DevOps knowledge they don't have. So they either give up or resort to screen recordings that don't capture the interactive nature of their work.
+This platform establishes the foundational infrastructure for design intent capture and spec-driven development workflows. By enabling teams to systematically share prototypes as executable design specifications, we prepare Microsoft for an AI-driven future where design intent becomes the source of truth for automated implementation.
 
-We need a secure prototype distribution platform that bridges this gap. One that takes a Git repository and turns it into a shareable, authenticated prototype with controlled access and professional presentation. No DevOps knowledge required.
+The immediate problem: creators can build impressive prototypes with AI assistance, but have no way to share them as living design specifications within Microsoft's secure infrastructure. This creates scattered design knowledge, inconsistent implementation, and missed opportunities to build organizational design dialects that will become critical for AI-assisted development.
 
-## Customer Challenges
+We need design intent infrastructure that transforms prototypes from isolated experiments into shared organizational knowledge, establishing the foundation for systematic design consistency and AI-ready development workflows.
 
-Through conversations with early vibe coders at Microsoft, we've identified several pain points:
+## Design Intent Challenges
 
-> "Vibe coding is easy, but making it look professional is hard. I need templates that already look like real Microsoft products."
+Through conversations with early adopters of AI-assisted development at Microsoft, we've identified critical gaps in design intent capture and sharing:
 
-> "Lovable feels like magic, but I can't use Fluent components. My prototypes look generic instead of like Microsoft experiences."
+> "I build prototypes that capture my design thinking, but there's no way to share the 'why' behind my decisions with the team."
 
-> "I share Lovable prototypes with passwords in URLs. I'm always nervous about whether it's actually secure."
+> "Every prototype dies in isolation. We rebuild the same interactions because we can't discover what others have already solved."
 
-> "VS Code with Copilot and the right MCPs gives me the same quality as Lovable, but I have no way to share what I build other than screenshots or videos."
+> "AI helps me code, but it doesn't understand our Microsoft design dialect. I keep having to re-explain our specific patterns."
 
-### Key Patterns
+> "I have great design intent documentation workflows locally, but no way to share them as living specifications with my team."
 
-- **Building Success**: Creators successfully build prototypes with AI assistance
-- **Sharing Roadblock**: They hit a wall when trying to share their work securely
-- **Discovery Chaos**: Prototypes scattered across Teams links, emails, and screenshots
-- **Version Confusion**: Multiple versions floating around with no clear "latest" indicator
-- **Access Anxiety**: No visibility into who can see prototypes or for how long
-- **Demo Friction**: Recipients don't understand the prototype's purpose or how to navigate it
+### Design Knowledge Fragmentation
 
-This forces creators to either:
-- Use external tools (risking security violations)
-- Burden engineers with deployment requests (creating bottlenecks)
-- Resort to static screenshots that miss the interactive experience
+- **Isolated Design Decisions**: Each creator develops solutions independently without organizational knowledge sharing
+- **Lost Design Reasoning**: The 'why' behind design choices disappears when prototypes are shared as static links
+- **Inconsistent Implementation**: Teams cannot systematically apply organizational design dialects at scale
+- **AI Training Gap**: No systematic capture of design intent for future AI-assisted development
+- **Discovery Chaos**: Valuable design patterns remain hidden in individual repositories
+- **Context Loss**: Design specifications lack the executable context needed for accurate implementation
+
+This creates systemic challenges:
+- Design knowledge doesn't compound across teams
+- AI assistance remains generic instead of organization-specific
+- Teams are unprepared for spec-driven development workflows
+- Design consistency cannot scale beyond individual contributor knowledge
 
 ## Technical Challenges
 
@@ -47,23 +50,26 @@ Current internal deployment options at Microsoft require understanding:
 
 For someone who just learned to code last week with Copilot's help, this is overwhelming. The result? Prototypes stay on laptops, feedback cycles slow down, and innovation stalls.
 
-## Vision
+## Vision: Design Intent Infrastructure
 
-### Product Requirements
+### Core Mission
+Transform prototypes from isolated experiments into systematic design intent capture, establishing Microsoft's foundation for AI-assisted spec-driven development workflows.
 
-#### 1. Secure Prototype Gallery
-A central web application where prototypes are discoverable with granular access control (Entra ID features). Users can browse, search, and filter prototypes by author, product area, tags, and recency. Managing access of who gets access to what, both internal employees and external guests (customers, etc.).
+### Strategic Objectives
 
-#### 2. Email-Based Access Control
-Share prototypes by entering email addresses (like PowerPoint). Owners can review all granted access, set expiration dates, and revoke access anytime. External emails require approval workflow. Full audit trail of who accessed when.
+#### 1. Design Intent Capture System
+Central platform where prototypes become executable design specifications with embedded reasoning, design decisions, and organizational dialect patterns. Enable systematic capture of "why" alongside "what" for future AI training and team knowledge sharing.
 
-#### 3. One-line Deployment
-Deploy any Git repository to a shareable URL with a single command. The platform handles all Azure complexity behind the scenes, enabling creators to focus on building.
+#### 2. Organizational Design Dialect Development  
+Build repository of Microsoft-specific design patterns, interaction behaviors, and implementation approaches that go beyond universal design systems. Establish design intent as organizational knowledge asset.
 
-#### 4. Professional Presentation
-Prototypes get professional URLs like `projectname.prototypes.microsoft.com`. Gallery provides context wrapper with instructions, demo scenarios, and purpose statement. Option to view fullscreen for complete experience.
+#### 3. AI-Ready Development Foundation
+Create structured design specification format that enables AI to understand, implement, and maintain consistency with Microsoft's unique design approach. Prepare infrastructure for spec-driven development workflows.
 
-#### 5. Discovery at Scale
+#### 4. Collaborative Design Knowledge Sharing
+Enable discovery and building upon existing design solutions through executable specifications. Transform individual design insights into organizational design intelligence.
+
+#### 5. Systematic Design Consistency
 Three-section layout: Favorites, My Prototypes, All. Smart search and filtering prevent overwhelming users when browsing hundreds of prototypes. "New" badges highlight recent work.
 
 #### 6. Flexible Viewing Options

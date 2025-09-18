@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Core prototype metadata
+model Prototype {
+  id                String    @id @default(cuid())
+  name              String
+  description       String?
+  gitHubRepoUrl     String
+  gitHubRepoName    String
+  gitHubOwner       String
+  createdBy         String    // User email from auth
+  createdAt         DateTime  @default(now())
+  lastUpdated       DateTime  @updatedAt
+  lastDeployedAt    DateTime?
+  isActive          Boolean   @default(true)
+  buildStatus       String    @default("pending") // pending, building, success, failed
+  buildErrorMessage String?
+  prototypeUrl      String?   // Generated URL path
+
+  // Relations
+  gitHubIntegration GitHubIntegration?
+  buildHistory      BuildHistory[]
+
+  @@index([createdBy])
+  @@index([gitHubOwner, gitHubRepoName])
+  @@index([lastUpdated(sort: Desc)])
+  @@map("prototypes")
+}
+
+// GitHub integration metadata
+model GitHubIntegration {
+  id                     String    @id @default(cuid())
+  prototypeId            String    @unique
+  gitHubInstallationId   Int?
+  webhookId              Int?
+  accessToken            String?   // Encrypted
+  refreshToken           String?   // Encrypted
+  tokenExpiresAt         DateTime?
+  lastSyncAt             DateTime?
+
+  // Relations
+  prototype Prototype @relation(fields: [prototypeId], references: [id], onDelete: Cascade)
+
+  @@index([prototypeId])
+  @@index([gitHubInstallationId])
+  @@map("github_integrations")
+}
+
+// Build history for debugging and analytics
+model BuildHistory {
+  id                String    @id @default(cuid())
+  prototypeId       String
+  gitCommitSha      String?
+  gitCommitMessage  String?
+  buildStatus       String    // started, success, failed
+  buildStartedAt    DateTime  @default(now())
+  buildCompletedAt  DateTime?
+  buildDurationMs   Int?
+  buildLogs         String?
+  errorMessage      String?
+
+  // Relations
+  prototype Prototype @relation(fields: [prototypeId], references: [id], onDelete: Cascade)
+
+  @@index([prototypeId, buildStartedAt(sort: Desc)])
+  @@map("build_history")
+}

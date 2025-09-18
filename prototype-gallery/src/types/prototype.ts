@@ -8,6 +8,7 @@ export interface User {
   role?: string;
 }
 
+// Mock prototype interface (for backward compatibility)
 export interface Prototype {
   id: string;
   title: string;
@@ -23,6 +24,73 @@ export interface Prototype {
   knobs?: KnobDefinition[];
   scenarios?: Scenario[];
   configurable?: boolean;
+}
+
+// Real prototype interface from backend API
+export interface RealPrototype {
+  id: string;
+  name: string;
+  description?: string;
+  gitHubRepoUrl: string;
+  gitHubRepoName: string;
+  gitHubOwner: string;
+  createdBy: string;
+  createdAt: Date;
+  lastUpdated: Date;
+  lastDeployedAt?: Date;
+  isActive: boolean;
+  buildStatus: 'pending' | 'building' | 'success' | 'failed';
+  buildErrorMessage?: string;
+  prototypeUrl?: string;
+}
+
+// GitHub types for API integration
+export interface GitHubRepository {
+  id: number;
+  name: string;
+  fullName: string;
+  description?: string;
+  private: boolean;
+  htmlUrl: string;
+  cloneUrl: string;
+  defaultBranch: string;
+  owner: {
+    login: string;
+    id: number;
+    avatarUrl: string;
+  };
+}
+
+export interface GitHubAuthResponse {
+  authUrl: string;
+  state: string;
+}
+
+// Build history for debugging
+export interface BuildHistory {
+  id: string;
+  prototypeId: string;
+  gitCommitSha?: string;
+  gitCommitMessage?: string;
+  buildStatus: 'started' | 'success' | 'failed';
+  buildStartedAt: Date;
+  buildCompletedAt?: Date;
+  buildDurationMs?: number;
+  buildLogs?: string;
+  errorMessage?: string;
+}
+
+// Create prototype request
+export interface CreatePrototypeRequest {
+  name: string;
+  description?: string;
+  gitHubRepoUrl: string;
+}
+
+// Update prototype request
+export interface UpdatePrototypeRequest {
+  name?: string;
+  description?: string;
 }
 
 // Future Phase 6 configuration types
